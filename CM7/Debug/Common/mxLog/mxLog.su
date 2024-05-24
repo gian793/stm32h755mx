@@ -1,0 +1,16 @@
+/home/giancarlo/st/stm32cubeide_1.14.0/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/arm-none-eabi/include/c++/12.3.1/arm-none-eabi/thumb/v7e-m+dp/hard/bits/gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/fLog.h:27:19:constexpr int32_t fPositionGet(const char*)	24	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/fLog.h:50:16:constexpr char fFormatGet(const char*)	24	static
+../../ThreadSafe/stm32_lock.h:293:20:void stm32_lock_acquire(LockingData_t*)	24	static,ignoring_inline_asm
+../../ThreadSafe/stm32_lock.h:304:20:void stm32_lock_release(LockingData_t*)	24	static,ignoring_inline_asm
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:38:8:size_t mxLog::storeMsg(const fData_t*, va_list)	48	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:107:8:)	28	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:123:19:)	44	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:148:6:void mxLog::printStr(const char*, char)	24	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:181:6:void mxLog::printPar(char)	112	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:281:6:bool mxLog::getHeader()	24	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:312:6:void mxLog::printOut()	40	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:362:6:void mxLog::taskManager()	16	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:368:1:void __static_initialization_and_destruction_0(int, int)	16	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:368:1:cpp)	8	static
+/home/giancarlo/Documents/g793Projects/stm32h755mx/Common/mxLog/mxLog.cpp:368:1:cpp)	8	static
