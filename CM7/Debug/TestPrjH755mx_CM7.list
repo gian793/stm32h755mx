@@ -2575,7 +2575,7 @@ void mxLog::printOut( void )
  8001648:	bd80      	pop	{r7, pc}
 
 0800164a <_ZN5mxLog11taskManagerEv>:
-  * @param  None
+  * @param  None.
   * @retval None.
   */
 

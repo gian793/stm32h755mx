@@ -171,9 +171,6 @@ TEST( mxLog, simpleMsg1 )
     CHECK_FALSE( M7LOG.isEmpty() );
 }
 
-#include <stdio.h>
-#include <stdlib.h>
-
 TEST( mxLog, simpleStr2 )
 {
     /*--------- Data ----------*/
