@@ -162,10 +162,10 @@ TEST( mxLog, init )
 	CHECK_EQUAL( 0, M7LOG.size() );
 }
 
-TEST( mxLog, emptyMsg )
+TEST( mxLog, simpleMsg )
 {
     /*--------- Data ----------*/
-	M7LOG.Info( "Simple string1" );
+	M7LOG.Info( "Simple string" );
 
     /*------- Sequence --------*/
     CHECK_FALSE( M7LOG.isEmpty() );
@@ -186,9 +186,9 @@ TEST( mxLog, noParMsg )
 TEST( mxLog, missingParMsg )
 {
     /*--------- Data ----------*/
-    static constexpr char msg[]{"---\"Missing par %u logged\"---"};
+    static constexpr char msg[]{"---\"Missing par % logged\"---"};
 
-    static constexpr char res[]{"---\"Missing par logged\"---"};
+    static constexpr char res[]{"---\"Missing par {} logged\"---"};
 
 	M7LOG.Info( msg );
     M7LOG.taskManager();
@@ -231,7 +231,7 @@ TEST( mxLog, intParMsg )
 {
     /*--------- Data ----------*/
     static constexpr char msg[]{"---\"INT32 par %d logged\"---"};
-    static uint32_t par = -1300456789;
+    static int32_t par = -1300456789;
 
     char comp[ strlen(msg) + 11 ]{0};
     sprintf(comp, msg, par );
@@ -246,7 +246,7 @@ TEST( mxLog, intParMsg2 )
 {
     /*--------- Data ----------*/
     static constexpr char msg[]{"---\"INT32 par %d logged\"---"};
-    static uint32_t par = -3;
+    static int32_t par = -3;
 
     char comp[ strlen(msg) + 11 ]{0};
     sprintf(comp, msg, par );
@@ -261,7 +261,7 @@ TEST( mxLog, hexParMsg )
 {
     /*--------- Data ----------*/
     static constexpr char msg[]{"---\"INT32 par 0x%x logged\"---"};
-    static uint32_t par = 128384732; /* */
+    static uint32_t par = 128384732; 
 
     char comp[ strlen(msg) + 11 ]{0};
     sprintf(comp, msg, par );
@@ -276,7 +276,22 @@ TEST( mxLog, HEXparMsg )
 {
     /*--------- Data ----------*/
     static constexpr char msg[]{"---\"INT32 par 0x%X logged\"---"};
-    static uint32_t par = 128384732; /* */
+    static uint32_t par = 128384732; 
+
+    char comp[ strlen(msg) + 11 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+    
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
+
+TEST( mxLog, floatParMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"Float par %f logged\"---"};
+    static float par = 4243.2535; 
 
     char comp[ strlen(msg) + 11 ]{0};
     sprintf(comp, msg, par );

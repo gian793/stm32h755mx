@@ -151,7 +151,15 @@ void mxLog::printStr( const char* pStr, const char endChar )
     {
         while( *pStr != endChar )
         {
-            HAL_UART_Transmit( pUsart, (const uint8_t*)pStr, 1, 10 );
+            if( *pStr == '%' )
+            {
+                HAL_UART_Transmit( pUsart, (const uint8_t*)"{} ", 3, 10 );
+                ++pStr;
+            }
+            else
+            {
+                HAL_UART_Transmit( pUsart, (const uint8_t*)pStr, 1, 10 );
+            }
 
             ++pStr;
         }
@@ -243,7 +251,7 @@ void mxLog::printPar( const char format )
                 snprintf( outBuf, bufSIZE, INT32_FORMAT, *static_cast<const int32_t*>(pdPar) );}
                 break;
 
-            case 'f':
+            case 'f':{
             case 'g':{
                 size_t sz = sizeof(double) + 1;
                 while( i <  sz )
@@ -315,13 +323,13 @@ void mxLog::printOut( void )
 
     if( getHeader() )
     {
+        /* Re-compose fData. */
         fData_t fData{0};
 
         char* p = reinterpret_cast<char*>(&fData);
 
         size_t sz = sizeof( fData_t );
 
-        /* Re-compose fData. */
         while( sz-- )
         {
             *p = get();
