@@ -287,11 +287,11 @@ TEST( mxLog, HEXparMsg )
     CHECK_TRUE( mockUart.check( comp ) ); 
 }
 
-TEST( mxLog, floatParMsg )
+TEST( mxLog, doubleParMsg )
 {
     /*--------- Data ----------*/
-    static constexpr char msg[]{"---\"Float par %f logged\"---"};
-    static float par = 4243.2535; 
+    static constexpr char msg[]{"---\"Double par %g logged\"---"};
+    static double par = 4243.2535; 
 
     char comp[ strlen(msg) + 11 ]{0};
     sprintf(comp, msg, par );

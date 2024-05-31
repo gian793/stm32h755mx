@@ -77,7 +77,6 @@ size_t mxLog::storeMsg( const fData_t* pfData, va_list args )
                 put( '\0' );}
                 break;
 
-            case 'f': /* float is promoted to double when passing through ... */
             case 'g':{
                 sz = sizeof( double );
                 double tmp = va_arg(args, double);
@@ -251,7 +250,6 @@ void mxLog::printPar( const char format )
                 snprintf( outBuf, bufSIZE, INT32_FORMAT, *static_cast<const int32_t*>(pdPar) );}
                 break;
 
-            case 'f':{
             case 'g':{
                 size_t sz = sizeof(double) + 1;
                 while( i <  sz )
