@@ -8,7 +8,9 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal_def.h"
 
-#define UART_MOCK_BUF_SIZE         ( 1024 )
+#define UART_PRINT_OUT_BUF_SIZE         ( 1024 )
+
+extern char uartPrintOutBuf[ ];
 
 typedef enum 
 {
@@ -30,7 +32,8 @@ typedef struct __UART_HandleTypeDef
 
 } UART_HandleTypeDef;
 
-char* halUartMock_GetBuf( void );
+void Hal_Uart_Reset( void );
+const char* mock_GetBuffer( void );
 
 // HAL_StatusTypeDef 
 HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);

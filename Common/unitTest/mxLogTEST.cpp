@@ -21,8 +21,8 @@ extern "C"
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mockPrintOut.h"
 #include "mxLog.h"
+#include "mockPrintOut.h"
 
 /*---------------------------------------------------------------------------*/
 		
@@ -135,7 +135,7 @@ TEST_GROUP( mxLog )
 
 	mxLog M7LOG{ logBuf, buf_SIZE, huart1 };
 
-    mockPrintOut mockUart{ halUartMock_GetBuf() , UART_MOCK_BUF_SIZE };
+    mockPrintOut mockUart{ uartPrintOutBuf , UART_PRINT_OUT_BUF_SIZE };
 
     void setup()
     {
@@ -148,6 +148,8 @@ TEST_GROUP( mxLog )
 
     void teardown()
     {
+        printf("\n\r MSG: %s", mock_GetBuffer());
+
         MemoryLeakWarningPlugin::restoreNewDeleteOverloads();
     }
 };
@@ -160,30 +162,129 @@ TEST( mxLog, init )
 	CHECK_EQUAL( 0, M7LOG.size() );
 }
 
-TEST( mxLog, simpleMsg1 )
+TEST( mxLog, emptyMsg )
 {
     /*--------- Data ----------*/
-
 	M7LOG.Info( "Simple string1" );
 
     /*------- Sequence --------*/
-
     CHECK_FALSE( M7LOG.isEmpty() );
 }
 
-TEST( mxLog, simpleStr2 )
+TEST( mxLog, noParMsg )
 {
     /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"No parameter logged\"---"};
 
-    static constexpr char testStr1[]{"This is a test string"};
+	M7LOG.Info( msg );
+    M7LOG.taskManager();
+    /*------- Sequence --------*/
 
-	M7LOG.Info( testStr1 );
+    CHECK_TRUE( mockUart.check( msg ) );
+}
 
+TEST( mxLog, missingParMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"Missing par %u logged\"---"};
+
+    static constexpr char res[]{"---\"Missing par logged\"---"};
+
+	M7LOG.Info( msg );
+    M7LOG.taskManager();
+    /*------- Sequence --------*/
+
+    CHECK_TRUE( mockUart.check( res ) );
+}
+
+TEST( mxLog, strParMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"String par %s logged\"---"};
+    static constexpr char par[]{"{ \"Inner STR\" }"};
+
+    char comp[ strlen( msg ) + strlen(par) ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
     M7LOG.taskManager();
 
     /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
 
-    CHECK_TRUE( mockUart.check( testStr1 ) );
+TEST( mxLog, uintParMag )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"UINT32 par %u logged\"---"};
+    static uint32_t par = 2800456789;
+
+    char comp[ strlen(msg) + 10 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
+
+TEST( mxLog, intParMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"INT32 par %d logged\"---"};
+    static uint32_t par = -1300456789;
+
+    char comp[ strlen(msg) + 11 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+    
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
+
+TEST( mxLog, intParMsg2 )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"INT32 par %d logged\"---"};
+    static uint32_t par = -3;
+
+    char comp[ strlen(msg) + 11 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+    
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
+
+TEST( mxLog, hexParMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"INT32 par 0x%x logged\"---"};
+    static uint32_t par = 128384732; /* */
+
+    char comp[ strlen(msg) + 11 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+    
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
+}
+
+TEST( mxLog, HEXparMsg )
+{
+    /*--------- Data ----------*/
+    static constexpr char msg[]{"---\"INT32 par 0x%X logged\"---"};
+    static uint32_t par = 128384732; /* */
+
+    char comp[ strlen(msg) + 11 ]{0};
+    sprintf(comp, msg, par );
+	M7LOG.Info( msg, par );
+    M7LOG.taskManager();
+    
+    /*------- Sequence --------*/
+    CHECK_TRUE( mockUart.check( comp ) ); 
 }
 
 /*---------------------------------------------------------------------------*/

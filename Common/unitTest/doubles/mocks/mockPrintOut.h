@@ -1,6 +1,8 @@
 #ifndef MOCK_PRINT_OUT_H
 #define  MOCK_PRINT_OUT_H
 
+#include "stm32h7xx_hal_uart.h"
+
 #ifdef __cplusplus
 
 #include <string.h>
@@ -13,7 +15,7 @@ class mockPrintOut
 
         void reset( void )
         {
-            memset(buf, 0, maxSize );
+            Hal_Uart_Reset();
         }
 
         bool check( const char* pStr )
