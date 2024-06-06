@@ -24,9 +24,9 @@ public:
     void Tx( Cmd &xCmd );
 
 private:
-    std::array<Cmd, cmdBufferSize> txBuffer;
+    std::array<Cmd, cmdBufferSize> txBuffer;    /* Out-going commands. */
 
-    std::array<Cmd, cmdBufferSize> rxBuffer;
+    std::array<Cmd, cmdBufferSize> rxBuffer;    /* In-coming commands or replies to out-going commands. */
 
     uint32_t txCnt;
 
