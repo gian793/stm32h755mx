@@ -1,2 +1,0 @@
-../../Common/cmdCtrl/cmd.h:27:5:Cmd::Cmd(CmdType, CmdType, PrioLevel, uint32_t, uint32_t, uint32_t, uint32_t, pCallback, pCallback, pCallback)	24	static
-../App/extChCmd.cpp:18:6:void vExtChCmdTask(void*)	248	static
