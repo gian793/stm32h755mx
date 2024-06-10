@@ -25,6 +25,8 @@ extern "C" [[noreturn]] void vLogM7Task( void* pArgument );
 
 extern UART_HandleTypeDef huart1;
 
+extern TIM_HandleTypeDef htim2;
+
 /*---------------------------------------------------------------------------*/
 
 #define printTest_PERIOD_MS                         ( 1000 )
@@ -96,6 +98,9 @@ void logTest( void )
 static bool printTrigger = false;
 uint32_t prIdx = 0;
 
+static uint32_t prevTim2 = 0;
+static uint32_t diff = 0;
+
 void vLogM7Task( void* pArgument )
 {
 //    static constexpr time_t todayUnix_TIME  = 1697950558;
@@ -129,7 +134,15 @@ void vLogM7Task( void* pArgument )
 
         M7LOG.taskManager();
 
+        taskENTER_CRITICAL();
+
+        prevTim2 = htim2.Instance->CNT;
+
         osDelay( pdMS_TO_TICKS( 50 ) );
+
+        diff = htim2.Instance->CNT - prevTim2;
+
+        taskEXIT_CRITICAL();
 
         if( printTrigger )
         {
