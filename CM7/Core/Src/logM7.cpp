@@ -136,11 +136,11 @@ void vLogM7Task( void* pArgument )
 
         taskENTER_CRITICAL();
 
-        prevTim2 = htim2.Instance->CNT;
+        prevTim2 = __HAL_TIM_GET_COUNTER( &htim2 );
 
         osDelay( pdMS_TO_TICKS( 50 ) );
 
-        diff = htim2.Instance->CNT - prevTim2;
+        diff = __HAL_TIM_GET_COUNTER( &htim2 ) - prevTim2;
 
         taskEXIT_CRITICAL();
 
