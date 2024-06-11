@@ -272,14 +272,6 @@ void SystemClock_Config(void)
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
 
-  /** Configure LSE Drive Capability
-   */
-  HAL_PWR_EnableBkUpAccess();
-
-  __HAL_RCC_LSE_CONFIG( RCC_LSE_OFF );
-
-  __HAL_RCC_LSEDRIVE_CONFIG( RCC_LSEDRIVE_MEDIUMLOW );
-
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -292,8 +284,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.CSICalibrationValue = RCC_CSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 5;
-  RCC_OscInitStruct.PLL.PLLN = 160;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 128;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -341,11 +333,13 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
+  /* With prescaler == 1 -> 10 ns/tick. */
+
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 200000000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -365,7 +359,7 @@ static void MX_TIM2_Init(void)
   }
   /* USER CODE BEGIN TIM2_Init 2 */
 
-  HAL_TIM_Base_Start( &htim2 );
+  HAL_TIM_Base_Start_IT( &htim2 );
 
   /* USER CODE END TIM2_Init 2 */
 
@@ -454,7 +448,7 @@ void vHeartBeatTask( void* pArgument )
 {
     while(1)
     {
-        HAL_GPIO_TogglePin( LED_RED_GPIO_Port, LED_RED_Pin );
+        //HAL_GPIO_TogglePin( LED_RED_GPIO_Port, LED_RED_Pin );
 
         osDelay( pdMS_TO_TICKS( 1000 ) );
     }
@@ -488,17 +482,28 @@ void StartDefaultTask(void *argument)
   * @param  htim : TIM handle
   * @retval None
   */
+static uint32_t prev = 0;
+static uint32_t difftim2 = 0;
+
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  /* USER CODE BEGIN Callback 0 */
+    /* USER CODE BEGIN Callback 0 */
+    if (htim->Instance == TIM2) {
+        HAL_GPIO_TogglePin( LED_RED_GPIO_Port, LED_RED_Pin );
+    }
 
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
+    /* USER CODE END Callback 0 */
+    if (htim->Instance == TIM6) {
+        HAL_IncTick();
 
-  /* USER CODE END Callback 1 */
+        uint32_t tmp = __HAL_TIM_GET_COUNTER( &htim2 );
+        difftim2 = tmp - prev;
+        prev = tmp;
+    }
+    /* USER CODE BEGIN Callback 1 */
+
+    /* USER CODE END Callback 1 */
 }
 
 /**
