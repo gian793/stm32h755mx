@@ -482,8 +482,8 @@ void StartDefaultTask(void *argument)
   * @param  htim : TIM handle
   * @retval None
   */
-static uint32_t prev = 0;
-static uint32_t difftim2 = 0;
+//static uint32_t prev = 0;
+//uint32_t difftim2_main = 0;
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -497,9 +497,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM6) {
         HAL_IncTick();
 
-        uint32_t tmp = __HAL_TIM_GET_COUNTER( &htim2 );
-        difftim2 = tmp - prev;
-        prev = tmp;
+//        uint32_t tmp = __HAL_TIM_GET_COUNTER( &htim2 );
+//        difftim2_main = tmp - prev;
+//        prev = tmp;
     }
     /* USER CODE BEGIN Callback 1 */
 

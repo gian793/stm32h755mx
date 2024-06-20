@@ -28,6 +28,7 @@ class ringBuffer
         bool isFull( void ) const;      
         size_t capacity( void ) const;      
         size_t size( void ) const;          /* Current item count. */
+        size_t space( void ) const;         /* Current free space count. */
 
     protected:
         LockingData_t lock;

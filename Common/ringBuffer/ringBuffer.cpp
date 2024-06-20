@@ -99,6 +99,25 @@ size_t ringBuffer<T>::size( void ) const
 }
 
 /**
+  * @brief  Return the number of items free.
+  * @param  None
+  * @retval Number of items stored.
+  */
+
+template <class T>
+size_t ringBuffer<T>::space( void ) const
+{
+    size_t freeSpace = 0;
+
+    if( !isBufFull )
+    {
+        freeSpace = maxSize - this->size();
+    }
+
+    return freeSpace;
+}
+
+/**
   * @brief  Put a new item in the buffer.
   *         If the buffer is full the oldest one is overwritten.
   * @param  New item to store.
@@ -137,19 +156,66 @@ void ringBuffer<T>::put( const T* itemBuf, const size_t itemCnt )
 {
     stm32_lock_acquire( &lock );
 
-    for( uint32_t i = 0; i < itemCnt; ++i )
+//    for( uint32_t i = 0; i < itemCnt; ++i )
+//    {
+//        buf[ head ] = itemBuf[i];
+//
+//        if( isBufFull )
+//        {
+//            tail = ( tail + 1 ) % maxSize;
+//        }
+//
+//        head = (head + 1) % maxSize;
+//
+//        isBufFull = ( head == tail );
+//    }
+
+    if( isBufFull )
     {
-        buf[ head ] = itemBuf[i];
-
-        if( isBufFull )
-        {
-            tail = ( tail + 1 ) % maxSize;
-        }
-
-        head = (head + 1) % maxSize;
-
-        isBufFull = ( head == tail );
+        tail = ( tail + itemCnt ) % maxSize;
     }
+    else if( this->size() + itemCnt >= maxSize )
+    {
+        isBufFull = true;
+
+        tail = ( tail + ( ( this->size() + itemCnt) - maxSize ) ) % maxSize;
+    }
+
+    uint32_t size1 = itemCnt;
+
+    if( head + itemCnt >= maxSize)
+    {
+        size1 = maxSize - head;
+
+//        if( isBufFull == false )
+//        {
+//            isBufFull = true;
+//
+//            tail = ( tail + ( itemCnt - size1 ) ) % maxSize;
+//        }
+    }
+
+    T* dst = &buf[ head ];
+
+    for( uint32_t i = 0; i < size1; ++i )
+    {
+        //*dst = itemBuf[i];
+        //++dst;
+
+        dst[ i ] = itemBuf[i];
+    }
+
+//    dst = &buf[ 0 ];
+
+//    for( uint32_t i = size1; i < itemCnt; ++i )
+    for( uint32_t i = 0; i < itemCnt-size1; ++i )
+    {
+//        *dst = itemBuf[i];
+//        ++dst;
+        buf[ i ] = itemBuf[ i + size1 ];
+    }
+
+    head = ( head + itemCnt ) % maxSize;
 
     stm32_lock_release( &lock );
 }

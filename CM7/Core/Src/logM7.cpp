@@ -12,6 +12,7 @@
 #include <memory>
 #include <cstddef>
 #include <cstring>
+#include <stdio.h>
 
 #include "cmsis_os.h"
 #include "mxLog.h"
@@ -37,7 +38,7 @@ extern UART_HandleTypeDef huart1;
 
 /*---------------------------------------------------------------------------*/
 
-constexpr size_t logBuf_SIZE = 1024;
+constexpr size_t logBuf_SIZE = 64;
 
 char logBuf[ logBuf_SIZE ] = {0};
 
@@ -57,6 +58,7 @@ void logTest( void )
 {
     static constexpr char testStr2[]{"Another test %d is now-2"};
     static constexpr char testStr3[]{"Test with NO parameter"};
+    static constexpr char innerStr4[]{"THIS IS AN INNER STR"};
 
     int32_t parInt32 = 45;
     uint32_t parUint32 = 43;
@@ -90,6 +92,9 @@ void logTest( void )
     M7LOG.Info( "\n\r" );
     M7LOG.Info( "String9 with double par = %g and tail", parDouble );
 
+    M7LOG.Info( "\n\r" );
+    M7LOG.Info( "String10 with inner string %s and tail", innerStr4 );
+
 //    M7LOG.Info( "This is a new test %d with a tail", NULL );
 }
 
@@ -98,8 +103,16 @@ void logTest( void )
 static bool printTrigger = false;
 uint32_t prIdx = 0;
 
-static uint32_t prevTim2 = 0;
+static uint32_t Tim2_a = 0;
+static uint32_t Tim2_b = 0;
 static uint32_t diff = 0;
+
+extern uint32_t difftim2_main;
+uint32_t cnt_tmr = 1000;
+
+#define STR_OUTBUF_SIZE     ( 1000 )
+
+static char strOutBuffer[ STR_OUTBUF_SIZE ] = {0};
 
 void vLogM7Task( void* pArgument )
 {
@@ -134,15 +147,31 @@ void vLogM7Task( void* pArgument )
 
         M7LOG.taskManager();
 
+        cnt_tmr = 10;
+
+        memset( strOutBuffer, 0, STR_OUTBUF_SIZE );
+
+
+        /////////////// TEST PART //////////////
         taskENTER_CRITICAL();
 
-        prevTim2 = __HAL_TIM_GET_COUNTER( &htim2 );
+        Tim2_a = __HAL_TIM_GET_COUNTER( &htim2 );
 
-        osDelay( pdMS_TO_TICKS( 50 ) );
+        M7LOG.Info(  "\n\r This is the test string to be measured %u", diff );
 
-        diff = __HAL_TIM_GET_COUNTER( &htim2 ) - prevTim2;
+        //sprintf( strOutBuffer, "\n\r Diff [10us] is: %lu", diff);
+
+        Tim2_b = __HAL_TIM_GET_COUNTER( &htim2 );
 
         taskEXIT_CRITICAL();
+        ////////////////////////////////////////
+
+
+        osDelay( pdMS_TO_TICKS( 2000 ) );
+
+        diff = Tim2_b - Tim2_a;
+
+        M7LOG.Info( "\n\r Diff [10ns] is: %u", diff );
 
         if( printTrigger )
         {

@@ -92,7 +92,7 @@ size_t mxLog::storeMsg( const fData_t* pfData, va_list args )
 
     stm32_lock_release( &lock );
 
-    sz += logHdr_SIZE + sizeof( fData_t );
+    sz += ( logHdr_SIZE + sizeof( fData_t ) );
 
     return sz;
 }
