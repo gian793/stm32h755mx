@@ -38,7 +38,7 @@ extern UART_HandleTypeDef huart1;
 
 /*---------------------------------------------------------------------------*/
 
-constexpr size_t logBuf_SIZE = 64;
+constexpr size_t logBuf_SIZE = 1024;
 
 char logBuf[ logBuf_SIZE ] = {0};
 

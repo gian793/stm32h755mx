@@ -156,20 +156,6 @@ void ringBuffer<T>::put( const T* itemBuf, const size_t itemCnt )
 {
     stm32_lock_acquire( &lock );
 
-//    for( uint32_t i = 0; i < itemCnt; ++i )
-//    {
-//        buf[ head ] = itemBuf[i];
-//
-//        if( isBufFull )
-//        {
-//            tail = ( tail + 1 ) % maxSize;
-//        }
-//
-//        head = (head + 1) % maxSize;
-//
-//        isBufFull = ( head == tail );
-//    }
-
     if( isBufFull )
     {
         tail = ( tail + itemCnt ) % maxSize;
@@ -182,37 +168,37 @@ void ringBuffer<T>::put( const T* itemBuf, const size_t itemCnt )
     }
 
     uint32_t size1 = itemCnt;
+    uint32_t size2 = 0;
 
     if( head + itemCnt >= maxSize)
     {
         size1 = maxSize - head;
 
-//        if( isBufFull == false )
-//        {
-//            isBufFull = true;
-//
-//            tail = ( tail + ( itemCnt - size1 ) ) % maxSize;
-//        }
+        size2 = itemCnt - size1;
     }
 
     T* dst = &buf[ head ];
+    const T* src = &itemBuf[ 0 ];
 
-    for( uint32_t i = 0; i < size1; ++i )
+    uint32_t i = 0;
+
+    /* Final part of the buffer. */
+    while( i < size1 )
     {
-        //*dst = itemBuf[i];
-        //++dst;
-
-        dst[ i ] = itemBuf[i];
+        *dst++ = *src++;
+        ++i;
     }
 
-//    dst = &buf[ 0 ];
+    src = &itemBuf[ size1 ];
+    dst = &buf[ 0 ];
 
-//    for( uint32_t i = size1; i < itemCnt; ++i )
-    for( uint32_t i = 0; i < itemCnt-size1; ++i )
+    i = 0;
+
+    /* Initial part of the buffer if roll-over ( size2 > 0 ). */
+    while( i < size2 )
     {
-//        *dst = itemBuf[i];
-//        ++dst;
-        buf[ i ] = itemBuf[ i + size1 ];
+        *dst++ = *src++;
+        ++i;
     }
 
     head = ( head + itemCnt ) % maxSize;
