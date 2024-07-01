@@ -9,14 +9,17 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include Middlewares/Third_Party/FreeRTOS/subdir.mk
--include Drivers/STM32H7xx_HAL_Driver/subdir.mk
+-include cppLib/utils/subdir.mk
+-include cppLib/ringBuffer/subdir.mk
+-include cppLib/mxLog/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
--include Common/utils/subdir.mk
--include Common/ringBuffer/subdir.mk
--include Common/mxLog/subdir.mk
--include Common/Src/subdir.mk
+-include Common/System/subdir.mk
+-include Common/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
+-include Common/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/subdir.mk
+-include Common/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/subdir.mk
+-include Common/Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
+-include Common/Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include App/subdir.mk
 -include objects.mk
 
@@ -64,37 +67,37 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := TestPrjH755mx_CM7
+BUILD_ARTIFACT_NAME := testPrjH755mx_CM7
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-TestPrjH755mx_CM7.elf \
+testPrjH755mx_CM7.elf \
 
 MAP_FILES += \
-TestPrjH755mx_CM7.map \
+testPrjH755mx_CM7.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-TestPrjH755mx_CM7.list \
+testPrjH755mx_CM7.list \
 
 OBJCOPY_HEX += \
-TestPrjH755mx_CM7.hex \
+testPrjH755mx_CM7.hex \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: TestPrjH755mx_CM7.elf secondary-outputs
+main-build: testPrjH755mx_CM7.elf secondary-outputs
 
 # Tool invocations
-TestPrjH755mx_CM7.elf TestPrjH755mx_CM7.map: $(OBJS) $(USER_OBJS) /home/giancarlo/Documents/g793Projects/stm32h755mx/CM7/STM32H755IITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "TestPrjH755mx_CM7.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/giancarlo/Documents/g793Projects/stm32h755mx/CM7/STM32H755IITX_FLASH.ld" -Wl,-Map="TestPrjH755mx_CM7.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+testPrjH755mx_CM7.elf testPrjH755mx_CM7.map: $(OBJS) $(USER_OBJS) /home/giancarlo/Documents/g793Projects/stm32h7CppLib/testPrj/CM7/STM32H755IITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "testPrjH755mx_CM7.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/giancarlo/Documents/g793Projects/stm32h7CppLib/testPrj/CM7/STM32H755IITX_FLASH.ld" -Wl,-Map="testPrjH755mx_CM7.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -103,19 +106,19 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-TestPrjH755mx_CM7.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "TestPrjH755mx_CM7.list"
+testPrjH755mx_CM7.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "testPrjH755mx_CM7.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-TestPrjH755mx_CM7.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "TestPrjH755mx_CM7.hex"
+testPrjH755mx_CM7.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "testPrjH755mx_CM7.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) TestPrjH755mx_CM7.elf TestPrjH755mx_CM7.hex TestPrjH755mx_CM7.list TestPrjH755mx_CM7.map default.size.stdout
+	-$(RM) default.size.stdout testPrjH755mx_CM7.elf testPrjH755mx_CM7.hex testPrjH755mx_CM7.list testPrjH755mx_CM7.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)

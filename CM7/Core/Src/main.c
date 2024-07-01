@@ -221,15 +221,15 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
 
-  logM7TaskHandle     = osThreadNew( vHeartBeatTask, NULL, &heartBeatTask_attributes );
+  logM7TaskHandle       = osThreadNew( vHeartBeatTask, NULL, &heartBeatTask_attributes );
 
-  heartBeatTaskHandle = osThreadNew( vLogM7Task, NULL, &logM7Task_attributes );
+  heartBeatTaskHandle   = osThreadNew( vLogM7Task,     NULL, &logM7Task_attributes );
 
-  testCsimpleTaskHandle = osThreadNew( vCsimpleTask, NULL, &cSimpleTask_attributes );
+  testCsimpleTaskHandle = osThreadNew( vCsimpleTask,   NULL, &cSimpleTask_attributes );
 
-  testCppTaskHandle = osThreadNew( vCppTestTask, NULL, &cppTestTask_attributes );
+  testCppTaskHandle     = osThreadNew( vCppTestTask,   NULL, &cppTestTask_attributes );
 
-  extChCmdTaskHandle = osThreadNew( vExtChCmdTask, NULL, &extChCmdTask_attributes );
+  //extChCmdTaskHandle    = osThreadNew( vExtChCmdTask,  NULL, &extChCmdTask_attributes );
 
   /* USER CODE END RTOS_THREADS */
 
